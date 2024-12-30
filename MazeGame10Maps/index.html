@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Maze Challenge (Single-page Layout + Debug 1 & Debug 2)</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="assets/ICON.png" />
+
+</head>
+<body>
+  <div id="container" style="display: flex; height: 100vh;">
+    <!-- 左: メニューやレベル選択 -->
+    <div id="menu-section" style="width: 280px; background:#eee; border-right:1px solid #999; padding:10px; box-sizing: border-box;">
+      <h2>Map Selection</h2>
+      <label for="level-select">レベルを選んでください:</label>
+      <select id="level-select">
+        <option value="1">Level 1</option>
+        <option value="2">Level 2</option>
+        <option value="3">Level 3</option>
+        <option value="4">Level 4</option>
+        <option value="5">Level 5</option>
+        <option value="6">Level 6</option>
+        <option value="7">Level 7</option>
+        <option value="8">Level 8</option>
+        <option value="9">Level 9</option>
+        <option value="10">Level 10</option>
+      </select>
+
+      <div class="buttons" style="margin-top:10px;">
+        <button id="start-btn" style="margin-right:5px;">ゲーム開始</button>
+        <button id="end-btn">ゲーム終了</button>
+      </div>
+
+      <p id="timer" style="margin-top:10px;">
+        Time Left: <span id="time-value">30</span> s
+      </p>
+
+      <p id="map-status" style="color: red; font-weight: bold;">
+        (マップ読み込み待ち)
+      </p>
+    </div>
+
+    <!-- 中央: Canvas領域 -->
+    <div id="game-section" style="flex:1; display:flex; justify-content:center; align-items:center;">
+      <canvas id="game-canvas" width="640" height="512" style="border:2px solid #333;"></canvas>
+    </div>
+
+    <!-- 右: デバッグ２カラム (Debug 1 + Debug 2) -->
+    <div id="debug-section" style="width: 300px; background:#fafafa; border-left:1px solid #999; padding:10px; box-sizing: border-box;">
+      <h2>Debug Log (履歴)</h2>
+      <div id="debug-messages" style="
+        width: 100%;
+        height: 250px;
+        overflow-y: auto;
+        background: #fff;
+        border:1px solid #ccc;
+        margin-bottom:10px;
+        padding:5px;
+        box-sizing: border-box;">
+        <!-- Debug 1 蓄積ログ -->
+      </div>
+
+      <h2>Debug 2: Latest Frame Info</h2>
+      <div id="debug2-frameinfo" style="
+        width: 100%;
+        height: 250px;
+        overflow-y: auto;
+        background: #fff;
+        border:1px solid #ccc;
+        padding:5px;
+        box-sizing: border-box;">
+        <!-- Debug 2: フレームごとに上書き表示 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- script読み込み -->
+  <script src="script.js"></script>
+</body>
+</html>

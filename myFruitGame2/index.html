@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>フルーツキャッチ（クラス構造＋ログ表示）</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>フルーツキャッチ（学習用サンプル）</h1>
+
+  <div id="container">
+    <!-- 左側：ゲームエリア -->
+    <div id="game-area">
+      <div id="player"></div>
+      <!-- FruitオブジェクトはJSで動的に追加 -->
+    </div>
+    <!-- 右側：ログエリア -->
+    <div id="log-panel">
+      <h2>ゲームログ</h2>
+      <div id="log-messages"></div>
+    </div>
+  </div>
+
+  <div id="control-panel">
+    <button id="start-btn">ゲーム開始</button>
+    <span id="score-label">Score: </span>
+    <span id="score-value">0</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

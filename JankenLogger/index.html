@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>じゃんけんゲーム（勝率付き）</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .buttons {
+      margin-bottom: 20px;
+    }
+    button {
+      margin-right: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #result-area {
+      margin-top: 10px;
+      font-size: 18px;
+      min-height: 30px;
+    }
+    #stats-area {
+      margin-top: 10px;
+      font-size: 16px;
+      background: #fafafa;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    #history {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: #fafafa;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    #history h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>じゃんけんゲーム</h1>
+    <div class="buttons">
+      <button id="btn-gu">グー</button>
+      <button id="btn-choki">チョキ</button>
+      <button id="btn-pa">パー</button>
+    </div>
+
+    <div id="result-area"></div>
+
+    <!-- 勝率や回数を表示 -->
+    <div id="stats-area"></div>
+
+    <div id="history">
+      <h2>勝敗履歴</h2>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

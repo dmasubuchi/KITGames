@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>2D Physics Random Map + Explanation</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      font-family: sans-serif;
+    }
+    #controls {
+      margin: 10px;
+    }
+    #game-canvas {
+      background: #ddd;
+      border: 2px solid #333;
+      margin-top: 20px;
+    }
+    .info-section {
+      max-width: 800px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 16px;
+      margin: 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- リロードボタン (マップ再生成) -->
+  <div id="controls">
+    <button id="reload-btn">リロード(マップ再生成)</button>
+  </div>
+
+  <!-- ゲームCanvas -->
+  <canvas id="game-canvas" width="800" height="500"></canvas>
+
+  <!-- 説明文を外部ファイルから読んで挿入する領域 -->
+  <div class="info-section" id="info-section">
+    <!-- explanation.html の内容をfetchで読み込み -->
+  </div>
+
+  <script>
+    // 外部ファイル explanation.html を読み込み、info-section に挿入
+    window.addEventListener("load", () => {
+      fetch("explanation.html")
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Failed to load explanation.html");
+          }
+          return response.text();
+        })
+        .then(htmlContent => {
+          document.getElementById("info-section").innerHTML = htmlContent;
+        })
+        .catch(err => {
+          console.error("Error:", err);
+        });
+    });
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>

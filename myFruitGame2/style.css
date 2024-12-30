@@ -1,0 +1,75 @@
+/* ページ全体 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: #f0f0f0;
+  text-align: center;
+}
+
+/* タイトル */
+h1 {
+  margin: 20px 0;
+}
+
+/* 親コンテナ：ゲームエリアとログエリアを横に並べる */
+#container {
+  display: flex;
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* 左：ゲームエリア */
+#game-area {
+  position: relative;
+  width: 70%;  /* 横幅の70%をゲーム用に */
+  height: 600px;
+  background-color: #e3f1ff;
+  border: 2px solid #333;
+  overflow: hidden;
+}
+
+/* 右：ログエリア */
+#log-panel {
+  width: 30%;  /* 横幅の30%をログ表示用に */
+  height: 600px;
+  border: 2px solid #333;
+  background: #fff;
+  box-sizing: border-box;
+  text-align: left;
+  overflow-y: scroll; /* 縦スクロール */
+  padding: 10px;
+}
+
+/* ログメッセージ表示領域 */
+#log-messages {
+  font-size: 0.9rem;
+  white-space: pre-wrap; /* 改行をそのまま表示 */
+}
+
+/* コントロールパネル（スタートボタン、スコアなど） */
+#control-panel {
+  margin: 20px auto;
+}
+
+/* プレイヤー要素 */
+#player {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background-color: #8c4;
+  border-radius: 5px;
+}
+
+/* フルーツ要素 */
+.fruit {
+  position: absolute;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  background-color: tomato;
+  border-radius: 50%;
+}

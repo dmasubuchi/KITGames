@@ -1,0 +1,58 @@
+aa
+
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minimal Arrow Key Game</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex; /* 左右に分割レイアウト */
+      height: 100vh;
+    }
+    #game-section {
+      flex: 1;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+    }
+    #log-section {
+      width: 300px;
+      background: #fff;
+      border-left: 1px solid #ccc;
+      overflow-y: auto;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #log-section h2 {
+      margin-top: 0;
+    }
+    #arrow-display {
+      color: #333;
+      background: #fff;
+      padding: 20px 40px;
+      border: 2px solid #999;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 左側: ゲーム表示領域 -->
+  <div id="game-section">
+    <div id="arrow-display">No Input</div>
+  </div>
+
+  <!-- 右側: ログ表示領域 -->
+  <div id="log-section">
+    <h2>Log</h2>
+    <div id="log-container"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

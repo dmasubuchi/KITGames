@@ -1,0 +1,54 @@
+/* ページ全体のリセットやフォントなど */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    text-align: center;
+    background: #f0f0f0;
+  }
+  
+  /* ゲーム画面コンテナ */
+  #game-container {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    margin: 0 auto;
+    background-color: #e3f1ff;
+    border: 2px solid #333;
+    overflow: hidden;
+  }
+  
+  /* プレイヤー */
+  #player {
+    position: absolute;
+    bottom: 0;      /* 画面の下端に配置 */
+    left: 50%;      /* 初期位置は中央 */
+    width: 50px;
+    height: 50px;
+    background-color: #8c4;
+    transform: translateX(-50%);
+    border-radius: 5px;
+  }
+  
+  /* フルーツ（落ちてくるオブジェクト） */
+  .fruit {
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    background-color: tomato;
+    border-radius: 50%; /* 丸くする */
+  }
+  
+  /* スコア表示 */
+  #score-panel {
+    margin-top: 10px;
+  }
+  
+  /* 開始ボタン */
+  #start-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+  

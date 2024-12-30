@@ -1,0 +1,14 @@
+{
+  "useAssets": true,
+  "tileSize": 64,
+  "images": {
+    "wall": "assets/wall.png",
+    "floor": "assets/floor.png",
+    "start": "assets/start.png",
+    "goal": "assets/goal.png",
+    "player": "assets/player.png",
+    "trap": "assets/trap.png",
+    "enemy": "assets/enemy.png",
+    "weapon": "assets/weapon.png"
+  }
+}
