@@ -1,27 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pac-boy</title>
-    <style>
-        canvas {
-            display: block;
-            margin: 0 auto;
-            background: black;
-        }
-        #startButton {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Pac-boy</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="360"></canvas>
-    <button id="startButton">スタート</button>
-    <script src="script.js"></script>
+
+  <h1>Pac-boy</h1>
+  <div id="scoreDisplay">Score: 0</div>
+  <div id="statusMessage"></div>
+  <button id="startButton">Start Game</button>
+
+  <canvas id="gameCanvas" width="448" height="576"></canvas>
+
+  <script src="script.js"></script>
 </body>
 </html>

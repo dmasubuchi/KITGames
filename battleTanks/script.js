@@ -5,7 +5,7 @@
  * - 戦車(レベル1〜5)による速度 & 弾数制限
  * - NPCの簡易行動
  * - 基地HP 3
- * - 当たり判定
+ * - 当たり判定（自分の弾が自分に当たらないように修正）
  * 
  * Canvasで描画 (width=600, height=400)
  ********************************************************/
@@ -339,7 +339,7 @@ function handlePlayerMove(tank, playerTag) {
     // 2人プレイ
     if (playerTag === "P1") {
       upKey = "w";
-      downKey = "x"; // 指示によるとW/Xが上下
+      downKey = "x"; // W/Xが上下
       leftKey = "a";
       rightKey = "d";
       fireKey = "s";
@@ -444,11 +444,7 @@ function npcBehavior() {
 
 //---------------------------------------------------
 // 弾の発射
-// プレイヤー操作の場合は向きが上下左右斜めなどキーに応じて。 
-// NPC用は引数(dx, dy)を指定。
-//
-// ここではプレイヤー操作は押した瞬間の(↑,→, etc)を見て
-// 移動ベクトルと同じ方向に撃つ、と簡易化する
+// 自分の弾が自分に当たらないよう、発射位置を少し前にずらす
 //---------------------------------------------------
 function shootBullet(tank, dxOverride, dyOverride) {
   if (!tank.alive) return;
@@ -456,14 +452,17 @@ function shootBullet(tank, dxOverride, dyOverride) {
 
   let vx = 0;
   let vy = 0;
+
+  // (A) NPCなど、方向が渡されている場合
   if (typeof dxOverride === "number" && typeof dyOverride === "number") {
     vx = dxOverride;
     vy = dyOverride;
   } else {
-    // プレイヤーのキー入力方向を調べる
+    // (B) プレイヤーのキー入力方向を調べる
     let upKey, downKey, leftKey, rightKey;
+
     if (tank === tank1 && playerCount === 2) {
-      // P1
+      // P1 (2人プレイ時)
       upKey = "w";
       downKey = "x";
       leftKey = "a";
@@ -482,12 +481,13 @@ function shootBullet(tank, dxOverride, dyOverride) {
       leftKey = "ArrowLeft";
       rightKey = "ArrowRight";
     } else {
-      // fallback
+      // 1人プレイで tank1 のみ操作、NPCは dxOverride/dyOverride で動く
       upKey = "ArrowUp";
       downKey = "ArrowDown";
       leftKey = "ArrowLeft";
       rightKey = "ArrowRight";
     }
+
     let dirX = 0;
     let dirY = 0;
     if (keys[upKey]) dirY -= 1;
@@ -497,23 +497,29 @@ function shootBullet(tank, dxOverride, dyOverride) {
 
     const dist = Math.sqrt(dirX*dirX + dirY*dirY);
     if (dist === 0) {
-      // もし方向キー押していないなら、上方向に撃つ、とか適当に決める
+      // もし方向キー押していないなら、仮に上方向(-1)に撃つ
       dirY = -1;
     } else {
-      dirX /= dist;
+      dirX /= dist; // 単位ベクトル化
       dirY /= dist;
     }
     vx = dirX;
     vy = dirY;
   }
 
-  // 弾速は戦車の速度 * 2.5
+  // 弾速は戦車の速度の 2.5 倍
   const bulletSpeed = tank.speed * 2.5;
   vx *= bulletSpeed;
   vy *= bulletSpeed;
 
-  // 弾生成(戦車の中心付近から発射)
-  const bullet = new Bullet(tank.x, tank.y, vx, vy, tank);
+  // ★★★★★ ここで「戦車の中心から少し前」に弾を出す ★★★★★
+  // 戦車本体を半径10ピクセル程度と想定し、+数ピクセル先に弾を生成
+  const offset = 14; // 戦車のサイズよりやや大きめのオフセット
+  const startX = tank.x + (vx / bulletSpeed) * offset;
+  const startY = tank.y + (vy / bulletSpeed) * offset;
+
+  // 弾オブジェクト生成
+  const bullet = new Bullet(startX, startY, vx, vy, tank);
   bullets.push(bullet);
   tank.activeBullets++;
 }
@@ -563,6 +569,7 @@ function checkBulletCollision(bullet) {
 
   // 戦車同士
   if (tank1.alive && bullet.owner !== tank1) {
+    // 弾の座標がtank1の半径(10)以内なら命中
     if (pointInCircle(bullet.x, bullet.y, tank1.x, tank1.y, 10)) {
       tank1.alive = false;
       bullet.alive = false;
@@ -571,6 +578,7 @@ function checkBulletCollision(bullet) {
     }
   }
   if (tank2.alive && bullet.owner !== tank2) {
+    // 弾の座標がtank2の半径(10)以内なら命中
     if (pointInCircle(bullet.x, bullet.y, tank2.x, tank2.y, 10)) {
       tank2.alive = false;
       bullet.alive = false;
