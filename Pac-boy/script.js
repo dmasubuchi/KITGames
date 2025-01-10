@@ -1,10 +1,9 @@
 /********************************************************************
  * Pac-boy (Pac-Man風 MVP)
  *
- * 主な修正:
- * - ゴーストの移動速度を "ghost.speed" で管理し、
- *   一定フレームごとに1タイル移動する形に変更。
- * - 外周がすべて壁になっており、壁の外には出ないマップ。
+ * 修正ポイント:
+ * - ゴーストの速度に掛ける係数 ghostSlow を導入し、初期値を 0.3 に設定
+ * - ghosts の速度は (ghostSlow) を使って一括管理
  ********************************************************************/
 
 let canvas, ctx;
@@ -14,7 +13,10 @@ let animationFrameId;
 let pelletsRemaining = 0;
 let statusMessageElement;
 
-// 0: 壁, 1: 道(餌あり), 2: 道(餌なし)
+// ゴースト全体の速度に掛ける係数
+let ghostSlow = 0.05;
+
+// マップデータ (外周が壁)
 const map = [
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,1,1,1,1,1,1,1,1,1,1,1,1,0],
@@ -41,14 +43,15 @@ const player = {
   color: "yellow"
 };
 
-// ゴースト (菱形)
+/**
+ * ゴーストは speed と moveCounter を持ち、
+ * speed * ghostSlow に基づいて動きを制御する。
+ */
 const ghosts = [
-  // speed: 移動速度 (1 = 毎フレーム1タイル, 0.5 = 2フレームに1タイル など)
-  // moveCounter: タイル移動までの累積
-  { x: 5, y: 5, color: "red",    dirX: 0, dirY: 0, speed: 0.4, moveCounter: 0 },
-  { x: 6, y: 5, color: "pink",   dirX: 0, dirY: 0, speed: 0.4, moveCounter: 0 },
-  { x: 7, y: 5, color: "cyan",   dirX: 0, dirY: 0, speed: 0.4, moveCounter: 0 },
-  { x: 8, y: 5, color: "orange", dirX: 0, dirY: 0, speed: 0.4, moveCounter: 0 }
+  { x: 5, y: 5, color: "red",    dirX: 0, dirY: 0, speed: 1.0, moveCounter: 0 },
+  { x: 6, y: 5, color: "pink",   dirX: 0, dirY: 0, speed: 1.0, moveCounter: 0 },
+  { x: 7, y: 5, color: "cyan",   dirX: 0, dirY: 0, speed: 1.0, moveCounter: 0 },
+  { x: 8, y: 5, color: "orange", dirX: 0, dirY: 0, speed: 1.0, moveCounter: 0 }
 ];
 
 // ====== イベントリスナー (キー1回押すと1マスだけ移動) ======
@@ -114,7 +117,7 @@ function startGame() {
   player.x = 1; 
   player.y = 1;
 
-  // ゴースト初期位置と移動関連のリセット
+  // ゴースト初期位置 (速度系リセット)
   ghosts[0].x = 5; ghosts[0].y = 5; ghosts[0].dirX = 0; ghosts[0].dirY = 0; ghosts[0].moveCounter = 0;
   ghosts[1].x = 6; ghosts[1].y = 5; ghosts[1].dirX = 0; ghosts[1].dirY = 0; ghosts[1].moveCounter = 0;
   ghosts[2].x = 7; ghosts[2].y = 5; ghosts[2].dirX = 0; ghosts[2].dirY = 0; ghosts[2].moveCounter = 0;
@@ -131,7 +134,7 @@ function startGame() {
 function gameLoop() {
   if (!gameRunning) return;
 
-  // ゴーストの移動
+  // ゴースト移動
   moveGhosts();
 
   // 衝突チェック
@@ -146,20 +149,21 @@ function gameLoop() {
   animationFrameId = requestAnimationFrame(gameLoop);
 }
 
-// ====== ゴースト移動 (速度付き) ======
+// ====== ゴースト移動 (ghostSlow を適用) ======
 function moveGhosts() {
   ghosts.forEach((ghost) => {
-    // 毎フレーム ghost.speed 分だけ moveCounter を加算
-    ghost.moveCounter += ghost.speed;
+    // ghost.speed * ghostSlow を毎フレーム加算
+    ghost.moveCounter += (ghost.speed * ghostSlow);
 
-    // moveCounter >= 1 になったら1タイル移動し、moveCounterを0に戻す
+    // moveCounter >= 1 になった時点で1マス移動
     if (ghost.moveCounter >= 1) {
       ghost.moveCounter = 0;
 
+      // 移動先
       const nextX = ghost.x + ghost.dirX;
       const nextY = ghost.y + ghost.dirY;
 
-      // 一定確率で方向転換 or 移動先が壁なら方向を変える
+      // ランダム方向転換 or 移動先が壁の場合に向きを変える
       if (Math.random() < 0.02 || isWall(nextX, nextY)) {
         const dirs = [
           { x:  1, y:  0 },
@@ -172,10 +176,10 @@ function moveGhosts() {
         ghost.dirY = randDir.y;
       }
 
-      // 改めて移動先を再計算
+      // 再度移動先を計算
       const newX = ghost.x + ghost.dirX;
       const newY = ghost.y + ghost.dirY;
-      // 壁でなければ移動
+      // 壁でなければ更新
       if (!isWall(newX, newY)) {
         ghost.x = newX;
         ghost.y = newY;
@@ -221,6 +225,7 @@ function drawMap() {
         ctx.arc(centerX, centerY, 4, 0, Math.PI * 2);
         ctx.fill();
       }
+      // tile === 2 => 道 (餌なし) なので塗らない
     }
   }
 }
