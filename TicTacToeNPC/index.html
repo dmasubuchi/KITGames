@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>3目並べバトル</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>3目並べバトル</h1>
+  
+  <!-- 難易度選択 -->
+  <div id="difficulty-menu">
+    <label>
+      <input type="radio" name="difficulty" value="easy" checked />
+      初級
+    </label>
+    <label>
+      <input type="radio" name="difficulty" value="medium" />
+      中級
+    </label>
+    <label>
+      <input type="radio" name="difficulty" value="hard" />
+      上級
+    </label>
+  </div>
+
+  <!-- スタートボタン -->
+  <button id="startButton">ゲームスタート</button>
+
+  <!-- スコア表示 -->
+  <div id="scoreInfo">
+    <p>プレイヤー勝ち: <span id="playerWins">0</span> 回</p>
+    <p>コンピュータ勝ち: <span id="computerWins">0</span> 回</p>
+    <p>引き分け: <span id="draws">0</span> 回</p>
+  </div>
+
+  <!-- ターン表示やメッセージ表示 -->
+  <div id="turnInfo">現在の番: <span id="currentTurn">-</span></div>
+  
+  <!-- ゲームボード (3x3) -->
+  <div id="gameBoard">
+    <!-- スクリプト側で生成しても良いが、最初にHTMLで用意しておいてもOK -->
+    <!-- 今回はJavaScript側でテーブルを組み立てる形にします -->
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

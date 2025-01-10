@@ -1,10 +1,19 @@
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #1a202c;
+  font-family: sans-serif;
+  text-align: center;
+  margin: 20px;
 }
 
-#root {
-    width: 100%;
-    height: 100vh;
+#infoPanel {
+  margin-top: 10px;
+}
+
+#gameCanvas {
+  border: 2px solid #333;
+  background-color: #eee;
+}
+
+/* 隠し/表示のための簡易的スタイル */
+.hidden {
+  display: none;
 }

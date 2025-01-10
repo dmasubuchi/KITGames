@@ -1,17 +1,70 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パックマン風ゲーム</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>戦車ゲーム</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel" src="script.js"></script>
+  <h1>戦車ゲーム</h1>
+
+  <!-- プレイヤー数選択 -->
+  <div>
+    <label>
+      <input type="radio" name="playerCount" value="1" checked>
+      1人プレイ (対NPC)
+    </label>
+    <label>
+      <input type="radio" name="playerCount" value="2">
+      2人プレイ (プレイヤー同士)
+    </label>
+  </div>
+
+  <!-- 戦車レベル選択 (プレイヤー / NPC) -->
+  <div>
+    <p>プレイヤー1のレベル:
+      <select id="p1Level">
+        <option value="1">レベル1</option>
+        <option value="2">レベル2</option>
+        <option value="3">レベル3</option>
+        <option value="4">レベル4</option>
+        <option value="5">レベル5</option>
+      </select>
+    </p>
+    <p id="p2LevelWrap">プレイヤー2のレベル:
+      <select id="p2Level">
+        <option value="1">レベル1</option>
+        <option value="2">レベル2</option>
+        <option value="3">レベル3</option>
+        <option value="4">レベル4</option>
+        <option value="5">レベル5</option>
+      </select>
+    </p>
+    <p id="npcLevelWrap">NPCのレベル:
+      <select id="npcLevel">
+        <option value="1">レベル1</option>
+        <option value="2">レベル2</option>
+        <option value="3">レベル3</option>
+        <option value="4">レベル4</option>
+        <option value="5">レベル5</option>
+      </select>
+    </p>
+  </div>
+
+  <!-- スタートボタン -->
+  <button id="startButton">ゲームスタート</button>
+
+  <div id="infoPanel">
+    <p id="messageArea"></p>
+    <div>
+      <span id="p1BaseHP">P1基地HP: 3</span> |
+      <span id="p2BaseHP">P2/NPC基地HP: 3</span>
+    </div>
+  </div>
+
+  <!-- ゲームキャンバス -->
+  <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+  <script src="script.js"></script>
 </body>
 </html>

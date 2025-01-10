@@ -1,0 +1,56 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+    margin: 20px;
+  }
+  
+  #difficulty-menu {
+    margin-bottom: 10px;
+  }
+  
+  #scoreInfo p {
+    margin: 4px 0;
+  }
+  
+  #turnInfo {
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  
+  /* ゲームボードのスタイル */
+  #gameBoard {
+    display: inline-block;
+    border: 2px solid #333;
+    margin-top: 10px;
+  }
+  
+  .board-row {
+    display: flex;
+  }
+  
+  .cell {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  /* カーソル位置をわかりやすくハイライト */
+  .cell.cursor {
+    background-color: #ffd;
+  }
+  
+  /* コマ表示 */
+  .X {
+    color: #e74c3c; /* 赤っぽい */
+  }
+  
+  .O {
+    color: #3498db; /* 青っぽい */
+  }
+  

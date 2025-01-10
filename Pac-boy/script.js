@@ -1,237 +1,161 @@
-// マップの定義（0: 通路+餌, 1: 壁, 2: パックマン初期位置, 3: ゴースト初期位置）
-const INITIAL_MAP = [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-    [1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,1,0,1,1,1,1,1,1,1,0,1,0,1],
-    [1,0,1,0,0,0,2,0,0,0,0,0,1,0,1],
-    [1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
-    [1,0,0,0,1,0,1,0,1,3,1,0,0,0,1],
-    [1,1,1,0,1,0,0,0,0,0,1,0,1,1,1],
-    [1,0,0,0,1,1,1,1,1,1,1,0,0,0,1],
-    [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
-    [1,0,0,0,1,1,1,0,1,1,1,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const startButton = document.getElementById('startButton');
+
+canvas.width = 500;
+canvas.height = 500;
+
+const tileSize = 25;
+const rows = 9;
+const cols = 10;
+let gameRunning = false;
+
+// Game State
+const pacman = { x: 1, y: 1, direction: "right" };
+let score = 0;
+const ghosts = [
+    { x: 8, y: 8, direction: "random" }, // Random moving ghost
+    { x: 7, y: 7, direction: "chase" }, // Chasing ghost
+    { x: 5, y: 5, direction: "ambush" }, // Ambush ghost
+    { x: 3, y: 3, direction: "patrol", patrolPoints: [[3, 3], [3, 8], [8, 8]] } // Patrol ghost
+];
+const pellets = [];
+
+// Map (0: empty, 1: pellet, 9: wall)
+const map = [
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+    [9, 1, 1, 1, 1, 1, 1, 1, 1, 9],
+    [9, 1, 9, 9, 1, 9, 9, 9, 1, 9],
+    [9, 1, 1, 1, 1, 1, 1, 1, 1, 9],
+    [9, 1, 9, 9, 9, 9, 9, 9, 1, 9],
+    [9, 1, 1, 1, 1, 1, 1, 1, 1, 9],
+    [9, 1, 9, 9, 9, 9, 9, 9, 1, 9],
+    [9, 1, 1, 1, 1, 1, 1, 1, 1, 9],
+    [9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
 ];
 
-const CELL_SIZE = 30;
-const GHOST_COLORS = ['red', 'pink', 'cyan', 'orange'];
+// Initialize pellets
+for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+        if (map[y][x] === 1) {
+            pellets.push({ x, y });
+        }
+    }
+}
 
-const PacmanGame = () => {
-    const [map, setMap] = React.useState([]);
-    const [pacman, setPacman] = React.useState({ x: 0, y: 0 });
-    const [ghosts, setGhosts] = React.useState([]);
-    const [score, setScore] = React.useState(0);
-    const [gameOver, setGameOver] = React.useState(false);
-    const [gameWon, setGameWon] = React.useState(false);
+// Function to move Pac-man
+function movePacman() {
+    switch (pacman.direction) {
+        case "right":
+            if (map[pacman.y][pacman.x + 1] !== 9) pacman.x++;
+            break;
+        case "left":
+            if (map[pacman.y][pacman.x - 1] !== 9) pacman.x--;
+            break;
+        case "up":
+            if (map[pacman.y - 1][pacman.x] !== 9) pacman.y--;
+            break;
+        case "down":
+            if (map[pacman.y + 1][pacman.x] !== 9) pacman.y++;
+            break;
+    }
+}
 
-    React.useEffect(() => {
-        initGame();
-    }, []);
+// Function to move ghosts
+function moveGhosts() {
+    ghosts.forEach(ghost => {
+        // Simple random movement for demonstration
+        const directions = ["right", "left", "up", "down"];
+        ghost.direction = directions[Math.floor(Math.random() * directions.length)];
+        switch (ghost.direction) {
+            case "right":
+                if (map[ghost.y][ghost.x + 1] !== 9) ghost.x++;
+                break;
+            case "left":
+                if (map[ghost.y][ghost.x - 1] !== 9) ghost.x--;
+                break;
+            case "up":
+                if (map[ghost.y - 1][ghost.x] !== 9) ghost.y--;
+                break;
+            case "down":
+                if (map[ghost.y + 1][ghost.x] !== 9) ghost.y++;
+                break;
+        }
+    });
+}
 
-    const initGame = () => {
-        const newMap = JSON.parse(JSON.stringify(INITIAL_MAP));
-        let pacmanPos = { x: 0, y: 0 };
-        const ghostPositions = [];
-        let remainingDots = 0;
+// Function to update the game state
+function update() {
+    movePacman();
+    moveGhosts();
+    // Check collisions (implement collision logic here)
+}
 
-        for (let y = 0; y < newMap.length; y++) {
-            for (let x = 0; x < newMap[y].length; x++) {
-                if (newMap[y][x] === 2) {
-                    pacmanPos = { x, y };
-                    newMap[y][x] = 0;
-                } else if (newMap[y][x] === 3) {
-                    ghostPositions.push({ x, y });
-                    newMap[y][x] = 0;
-                }
-                if (newMap[y][x] === 0) {
-                    remainingDots++;
-                }
+// Function to render the game
+function render() {
+    console.log('Rendering...');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Render the map
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            if (map[y][x] === 9) {
+                ctx.fillStyle = 'blue';
+                ctx.fillRect(x * 40, y * 40, 40, 40);
+            } else if (pellets.some(p => p.x === x && p.y === y)) {
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(x * 40 + 20, y * 40 + 20, 5, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
+    }
 
-        setMap(newMap);
-        setPacman(pacmanPos);
-        setGhosts(ghostPositions);
-        setScore(0);
-        setGameOver(false);
-        setGameWon(false);
-    };
+    // Render Pac-man
+    ctx.fillStyle = 'yellow';
+    ctx.beginPath();
+    ctx.arc(pacman.x * 40 + 20, pacman.y * 40 + 20, 20, 0, Math.PI * 2);
+    ctx.fill();
 
-    React.useEffect(() => {
-        const handleKeyPress = (e) => {
-            if (gameOver || gameWon) return;
+    // Render ghosts
+    ctx.fillStyle = 'red';
+    ghosts.forEach(ghost => {
+        ctx.beginPath();
+        ctx.arc(ghost.x * 40 + 20, ghost.y * 40 + 20, 20, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
 
-            const movement = {
-                ArrowUp: { x: 0, y: -1 },
-                ArrowDown: { x: 0, y: 1 },
-                ArrowLeft: { x: -1, y: 0 },
-                ArrowRight: { x: 1, y: 0 }
-            }[e.key];
+// Game loop
+function gameLoop() {
+    if (gameRunning) {
+        update();
+        render();
+        requestAnimationFrame(gameLoop);
+    }
+}
 
-            if (movement) {
-                movePacman(movement);
-            }
-        };
+// Start button event listener
+startButton.addEventListener('click', () => {
+    gameRunning = true;
+    startButton.style.display = 'none';
+    gameLoop();
+});
 
-        window.addEventListener('keydown', handleKeyPress);
-        return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [gameOver, gameWon, map, pacman]);
-
-    const movePacman = React.useCallback(({ x: dx, y: dy }) => {
-        const newX = pacman.x + dx;
-        const newY = pacman.y + dy;
-
-        if (map[newY]?.[newX] !== 1) {
-            setPacman({ x: newX, y: newY });
-
-            if (map[newY][newX] === 0) {
-                const newMap = [...map];
-                newMap[newY][newX] = -1;
-                setMap(newMap);
-                setScore(score + 10);
-
-                const remainingDots = newMap.flat().filter(cell => cell === 0).length;
-                if (remainingDots === 0) {
-                    setGameWon(true);
-                }
-            }
-        }
-    }, [map, pacman, score]);
-
-    React.useEffect(() => {
-        if (gameOver || gameWon) return;
-
-        const moveGhosts = () => {
-            setGhosts(currentGhosts => 
-                currentGhosts.map((ghost, index) => {
-                    let dx = 0, dy = 0;
-                    switch (index) {
-                        case 0:
-                            dx = Math.sign(pacman.x - ghost.x);
-                            dy = Math.sign(pacman.y - ghost.y);
-                            break;
-                        case 1:
-                            dx = Math.sign((pacman.x + 4) - ghost.x);
-                            dy = Math.sign((pacman.y + 4) - ghost.y);
-                            break;
-                        case 2:
-                            dx = Math.random() > 0.5 ? 1 : -1;
-                            dy = Math.random() > 0.5 ? 1 : -1;
-                            break;
-                        case 3:
-                            dx = Math.sign(ghost.x - pacman.x);
-                            dy = Math.sign(ghost.y - pacman.y);
-                            break;
-                    }
-
-                    const newX = ghost.x + dx;
-                    const newY = ghost.y + dy;
-
-                    if (map[newY]?.[newX] !== 1) {
-                        return { x: newX, y: newY };
-                    }
-                    return ghost;
-                })
-            );
-        };
-
-        const intervalId = setInterval(moveGhosts, 500);
-        return () => clearInterval(intervalId);
-    }, [gameOver, gameWon, map, pacman]);
-
-    React.useEffect(() => {
-        const checkCollision = () => {
-            ghosts.forEach(ghost => {
-                if (ghost.x === pacman.x && ghost.y === pacman.y) {
-                    setGameOver(true);
-                }
-            });
-        };
-
-        checkCollision();
-    }, [ghosts, pacman]);
-
-    return React.createElement('div', {
-        className: 'flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4'
-    }, [
-        React.createElement('div', {
-            key: 'score',
-            className: 'mb-4 text-white text-xl'
-        }, `Score: ${score}`),
-        
-        (gameOver || gameWon) && React.createElement('div', {
-            key: 'restart',
-            className: 'mb-4'
-        }, React.createElement('button', {
-            onClick: initGame,
-            className: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-        }, 'Restart')),
-
-        React.createElement('div', {
-            key: 'game-board',
-            className: 'relative bg-black p-2 rounded'
-        }, [
-            ...map.map((row, y) =>
-                React.createElement('div', {
-                    key: y,
-                    className: 'flex'
-                }, row.map((cell, x) =>
-                    React.createElement('div', {
-                        key: `${x}-${y}`,
-                        className: 'flex items-center justify-center',
-                        style: {
-                            width: CELL_SIZE,
-                            height: CELL_SIZE
-                        }
-                    }, cell === 1 ?
-                        React.createElement('div', {
-                            className: 'w-full h-full bg-blue-900'
-                        }) :
-                        cell === 0 ?
-                        React.createElement('div', {
-                            className: 'w-2 h-2 bg-yellow-200 rounded-full'
-                        }) : null
-                    )
-                ))
-            ),
-            React.createElement('div', {
-                key: 'pacman',
-                className: 'absolute w-6 h-6 bg-yellow-400 rounded-full',
-                style: {
-                    left: pacman.x * CELL_SIZE + 2,
-                    top: pacman.y * CELL_SIZE + 2,
-                }
-            }),
-            ...ghosts.map((ghost, index) =>
-                React.createElement('div', {
-                    key: `ghost-${index}`,
-                    className: 'absolute w-6 h-6 rounded-full',
-                    style: {
-                        left: ghost.x * CELL_SIZE + 2,
-                        top: ghost.y * CELL_SIZE + 2,
-                        backgroundColor: GHOST_COLORS[index],
-                    }
-                })
-            )
-        ]),
-
-        gameOver && React.createElement('div', {
-            key: 'game-over',
-            className: 'mt-4 text-red-500 text-2xl font-bold'
-        }, 'Game Over!'),
-
-        gameWon && React.createElement('div', {
-            key: 'game-won',
-            className: 'mt-4 text-green-500 text-2xl font-bold'
-        }, 'You Win!')
-    ]);
-};
-
-ReactDOM.render(
-    React.createElement(PacmanGame),
-    document.getElementById('root')
-);
+// Keyboard event listener for Pac-man movement
+document.addEventListener('keydown', (event) => {
+    switch (event.key) {
+        case 'ArrowRight':
+            pacman.direction = 'right';
+            break;
+        case 'ArrowLeft':
+            pacman.direction = 'left';
+            break;
+        case 'ArrowUp':
+            pacman.direction = 'up';
+            break;
+        case 'ArrowDown':
+            pacman.direction = 'down';
+            break;
+    }
+});
